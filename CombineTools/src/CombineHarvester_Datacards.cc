@@ -107,11 +107,18 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
       // The root file path given in the datacard is relative to the datacard
       // path, so we join the path to the datacard with the path to the file
       std::string dc_path;
-      std::size_t slash = filename.find_last_of('/');
-      if (slash != filename.npos) {
-        dc_path = filename.substr(0, slash) + "/" + words[i][3];
-      } else {
+      if(words[i][3].front() == '/') // root file path given as absolute path
+      {
         dc_path = words[i][3];
+      }
+      else
+      {
+        std::size_t slash = filename.find_last_of('/');
+        if (slash != filename.npos) {
+          dc_path = filename.substr(0, slash) + "/" + words[i][3];
+        } else {
+          dc_path = words[i][3];
+        }
       }
       if (!file_store.count(dc_path))
         file_store[dc_path] = std::make_shared<TFile>(dc_path.c_str());
